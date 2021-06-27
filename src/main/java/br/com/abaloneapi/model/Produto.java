@@ -13,14 +13,11 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(name="nome")
-	private String nome;
-    
-    @Column(name="categoria")
-	private String categoria;
-    
-    @Column(name="valor")
+	private String nome; 
+	@Column(name="categoria")
+	private String categoria;   
 	private float valor;
+	private int qtd;
     
     public Produto() {
     	
@@ -52,8 +49,24 @@ public class Produto {
 		this.valor = valor;
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getQtd() {
+		return qtd;
+	}
+
+	public void setQtd(int qtd) {
+		this.qtd = qtd;
+	}
+
 	@Override
 	public String toString() {
-		return "Produto [id=" + id + ", nome=" + nome + ", categoria=" + categoria + ", valor=" + valor +"]";
+		return "Produto [id=" + id + ", nome=" + nome + ", categoria=" + categoria + ", valor=" + valor +", qtd=" + qtd +"]";
 	}	
 }
