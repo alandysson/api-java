@@ -1,22 +1,21 @@
 package br.com.abaloneapi.controller;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.abaloneapi.model.Produto;
@@ -29,11 +28,15 @@ public class ProdutosContoller {
 	@Autowired
 	private ProdutoRepository produtoRepository;
 	
-	@CrossOrigin
     @PostMapping("/cadastrar")
-    public ResponseEntity<?> cadastrar(@RequestBody Produto produto) {
-    	System.out.print("a");
-        return new ResponseEntity<>(produtoRepository.save(produto), HttpStatus.CREATED);
+    @ResponseStatus(value = HttpStatus.CREATED, reason="Success")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public ResponseEntity<Produto> cadastrar(@RequestBody Produto produto) {
+    	try { 		
+    		return new ResponseEntity<>(produtoRepository.save(produto), HttpStatus.CREATED);
+    	} catch (Exception e) {
+    		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
     }
     
     @GetMapping("/buscar")
@@ -55,19 +58,24 @@ public class ProdutosContoller {
     			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     	}
     }
+    
+	@PutMapping("/alterar/{id}")
+	public ResponseEntity<Produto> updateLivros(@PathVariable Long id, @RequestBody Produto produtoAtualizado){
+		Optional<Produto> produtoDados = produtoRepository.findById(id);
+		
+		if(produtoDados.isPresent()) {
+			Produto pr = produtoDados.get();
+			pr.setNome(produtoAtualizado.getNome());
+			pr.setCategoria(produtoAtualizado.getCategoria());
+			pr.setValor(produtoAtualizado.getValor());
+			pr.setQtd(produtoAtualizado.getQtd());
+			
+			produtoRepository.save(pr);
+			
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
-//	@GetMapping("/produtos")
-//	  public @ResponseBody Iterable<Produto> getAllUsers() {
-//	    return produtoRepository.findAll();
-//	}
-//	
-//	@PostMapping("/novo-produto")
-//	public void salvarProduto(@RequestBody Produto produto, RedirectAttributes attr) {
-//		try {
-//			produtoRepository.save(produto);
-//			attr.addFlashAttribute("message", "Sucesso ao salvar");
-//		} catch(Exception e) {
-//			attr.addFlashAttribute("message", "Erro ao salvar");			
-//		}
-//	}
 }

@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 	private String nome; 
 	@Column(name="categoria")
 	private String categoria;   
@@ -23,8 +23,7 @@ public class Produto {
     	
     }
 	
-    public Produto(int id, String nome, float valor, String categoria){
-        this.id = id;
+    public Produto(String nome, float valor, String categoria){
         this.nome = nome;
         this.categoria = categoria;
         this.valor = valor;
@@ -49,11 +48,11 @@ public class Produto {
 		this.valor = valor;
 	}
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
