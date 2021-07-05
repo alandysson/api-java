@@ -13,20 +13,24 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(name="nome")
 	private String nome; 
 	@Column(name="categoria")
 	private String categoria;   
+	@Column(name="valor")
 	private float valor;
+	@Column(name="qtd")
 	private int qtd;
     
     public Produto() {
     	
     }
 	
-    public Produto(String nome, float valor, String categoria){
+    public Produto(String nome, float valor, String categoria, int qtd){
         this.nome = nome;
         this.categoria = categoria;
         this.valor = valor;
+        this.qtd = qtd;
     }
 	
 	public String getNome() {
