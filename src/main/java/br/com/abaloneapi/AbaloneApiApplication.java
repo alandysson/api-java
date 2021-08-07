@@ -18,5 +18,4 @@ public class AbaloneApiApplication implements WebMvcConfigurer {
 	public static void main(String[] args) {
 		SpringApplication.run(AbaloneApiApplication.class, args);
 	}
-
 }

@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,18 +23,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.abaloneapi.model.Pedido;
 import br.com.abaloneapi.model.Produto;
+import br.com.abaloneapi.repository.PedidoRepository;
 import br.com.abaloneapi.repository.ProdutoRepository;
 
 @RestController
 @RequestMapping(path="/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProdutosContoller {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
 	
     @PostMapping("/cadastrar")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Produto> cadastrar(@RequestBody(required=true) Produto produto) {
     	try { 		
     		return new ResponseEntity<>(produtoRepository.save(produto), HttpStatus.CREATED);
@@ -39,20 +48,9 @@ public class ProdutosContoller {
     }
     
     @GetMapping("/buscar")
-    public ResponseEntity<List<Produto>> buscar(@RequestParam(required=false) String nome) {
+    public ResponseEntity<Page<Produto>> listProdutos(@PageableDefault(sort = "id", size = 8, direction = Direction.DESC) Pageable page) {
     		try {
-    			List<Produto> produto = new ArrayList<Produto>();
-    			if(nome == null) {
-    				produtoRepository.findAll().forEach(produto::add);
-    			} else {
-    				produtoRepository.findByNome(nome);
-    			}
-    			
-    			if(produto.isEmpty()) {
-    				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    			}
-    			
-    			return new ResponseEntity<>(produto, (HttpStatus.OK));
+    			return new ResponseEntity<>(produtoRepository.findAll(page), (HttpStatus.OK));
     		} catch (Exception e) {
     			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     	}
@@ -70,7 +68,6 @@ public class ProdutosContoller {
 	}
     
 	@PutMapping("/alterar/{id}")
-	@CrossOrigin(origins = "http://localhost:3000")
 	public ResponseEntity<Produto> updateLivros(@PathVariable Long id, @RequestBody Produto produtoAtualizado){
 		Optional<Produto> produtoDados = produtoRepository.findById(id);
 		
@@ -90,7 +87,6 @@ public class ProdutosContoller {
 	}
 	
 	@DeleteMapping("excluir/{id}")
-	@CrossOrigin(origins = "http://localhost:3000")
 	public ResponseEntity<HttpStatus> deletarLivro(@PathVariable("id") Long id){
 		try {
 			produtoRepository.deleteById(id);
