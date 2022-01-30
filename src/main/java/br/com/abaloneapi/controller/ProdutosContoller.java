@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.abaloneapi.model.Pedido;
 import br.com.abaloneapi.model.Produto;
@@ -66,7 +67,7 @@ public class ProdutosContoller {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-    
+	
 	@PutMapping("/alterar/{id}")
 	public ResponseEntity<Produto> updateLivros(@PathVariable Long id, @RequestBody Produto produtoAtualizado){
 		Optional<Produto> produtoDados = produtoRepository.findById(id);
